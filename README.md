@@ -52,7 +52,7 @@ Payload fields: `first_name, last_name, email, phone, message, sms_marketing_con
 - `src/pages/`: one folder per URL. Blog posts render from `src/pages/[slug]/` at the site root, like the WordPress permalinks.
 - `src/data/posts.json`, `src/data/legal.json`: blog posts and Privacy/Terms, exported from WordPress.
 - `public/wp-content/uploads/...`: blog featured images at their original WordPress paths.
-- `public/img/`: site photography (WebP). `hero.webp` and `hero-kitchen.webp` are licensed Adobe Stock (IDs 100798377, 377231448).
+- `public/img/`: site photography (WebP). `hero-kitchen.webp` (homepage hero) is licensed Adobe Stock ID 377231448.
 - `public/_redirects`: old Redirection-plugin rules, Yoast sitemaps, feeds, WP system URLs.
 - `functions/api/contact.js`: contact form handler (Cloudflare Pages Function).
 - `src/scripts/motion.ts`: GSAP ScrollTrigger + Lenis scroll animation. Respects `prefers-reduced-motion`.

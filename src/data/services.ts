@@ -29,8 +29,8 @@ export const services: Record<string, Service> = {
     seoDescription: 'Full kitchen remodels in Nashville with cabinetry built in our own shop. Realistic timelines, honest budgets, one crew start to finish. (615) 469-2781.',
     h1: 'Kitchen Remodeling in Nashville, TN',
     intro: 'The cabinetry stays in-house: designed, built and installed by one crew out of our Madison shop. Fewer handoffs, fewer surprises, and one company that owns the outcome.',
-    hero: '/img/hero-kitchen.webp',
-    heroAlt: 'Bright transitional kitchen with inset shaker cabinetry and a large marble island',
+    hero: '/img/vaulted.webp',
+    heroAlt: 'Vaulted kitchen with white cabinetry and a walnut island, built by Tom Bell Cabinetry',
     lede: [
       "A kitchen remodel goes sideways in predictable ways: the cabinets arrive wrong, the installer isn't the person who measured, and nobody owns the problem. We avoid most of that by keeping the cabinetry in-house, designed, built and installed by our own crew out of our Madison, TN shop.",
     ],
@@ -57,7 +57,7 @@ export const services: Record<string, Service> = {
       ] },
     ],
     gallery: [
-      ['vaulted', 'Vaulted kitchen with white cabinetry and a walnut island'],
+      ['g2', 'Vaulted white kitchen with a walnut island'],
       ['kitchen', 'Walnut kitchen island with a farmhouse sink'],
       ['g11', 'Walnut kitchen run with long drawers'],
       ['g12', 'Walnut island with an open shelf base'],
