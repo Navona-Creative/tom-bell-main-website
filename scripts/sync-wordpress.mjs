@@ -8,19 +8,43 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+const run = promisify(execFile);
 
 const WP = (process.env.WP_URL || 'https://tombellcabinetry.com').replace(/\/$/, '');
 const SITE = 'https://tombellcabinetry.com';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DATA = path.join(ROOT, 'src/data');
+// SiteGround's bot filter blocks the default Node user agent.
+const HEADERS = {
+  'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Safari/605.1.15',
+  accept: 'application/json,text/html;q=0.9,*/*;q=0.8',
+  'accept-language': 'en-US,en;q=0.9',
+};
 const PUB = path.join(ROOT, 'public');
+
+// SiteGround sometimes answers with a captcha page instead of JSON; retry.
+// Node's fetch gets challenged more often than curl, so the API calls use curl.
+async function getJSON(url) {
+  for (let i = 1; i <= 8; i++) {
+    const { stdout } = await run('curl', ['-s', '-A', HEADERS['user-agent'], '-H', `Accept: ${HEADERS.accept}`,
+      '-H', `Accept-Language: ${HEADERS['accept-language']}`, '-w', '\n%{http_code}', url], { maxBuffer: 64 * 1024 * 1024 });
+    const cut = stdout.lastIndexOf('\n');
+    const text = stdout.slice(0, cut), status = Number(stdout.slice(cut + 1));
+    if (status === 200 && !text.startsWith('<')) return { ok: true, data: JSON.parse(text) };
+    if (status === 400 || status === 404) return { ok: false };
+    await new Promise((r) => setTimeout(r, 1500 * i));
+  }
+  throw new Error(`Blocked by bot protection: ${url}`);
+}
 
 async function getAll(type, extra = '') {
   const out = [];
   for (let page = 1; ; page++) {
-    const res = await fetch(`${WP}/wp-json/wp/v2/${type}?per_page=100&page=${page}&status=publish&_embed=wp:featuredmedia${extra}`);
+    const res = await getJSON(`${WP}/wp-json/wp/v2/${type}?per_page=100&page=${page}&status=publish&_embed=wp:featuredmedia${extra}`);
     if (!res.ok) break;
-    const batch = await res.json();
+    const batch = res.data;
     out.push(...batch);
     if (batch.length < 100) break;
   }
@@ -42,7 +66,7 @@ async function saveImage(url) {
   const rel = url.replace(/^https?:\/\/[^/]+/, '');
   const dest = path.join(PUB, rel);
   try { await fs.access(dest); return rel; } catch {}
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: HEADERS });
   if (!res.ok) return null;
   const buf = Buffer.from(await res.arrayBuffer());
   await fs.mkdir(path.dirname(dest), { recursive: true });
