@@ -21,7 +21,11 @@ interface Props {
 }
 const { title, description = '', image = '/img/share-card.jpg', type = 'website', schema, noindex = false, solidHeader = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
-const ogImage = new URL(image, site.url).href;
+// Share cards must load from wherever the site is live. Before launch that's the
+// pages.dev preview: set OG_HOST in Cloudflare Pages env vars, then delete it at cutover.
+const ogHost = (process.env.OG_HOST || site.url).replace(/\/$/, '');
+const ogImage = new URL(image, ogHost).href;
+const ogUrl = new URL(Astro.url.pathname, ogHost).href;
 
 const business = {
   '@context': 'https://schema.org',
@@ -54,7 +58,7 @@ const schemas = [business, ...(schema ? (Array.isArray(schema) ? schema : [schem
   <meta property="og:site_name" content={site.shortName}>
   <meta property="og:title" content={title}>
   {description && <meta property="og:description" content={description}>}
-  <meta property="og:url" content={canonical}>
+  <meta property="og:url" content={ogUrl}>
   <meta property="og:image" content={ogImage}>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">

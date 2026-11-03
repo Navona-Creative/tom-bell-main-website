@@ -61,7 +61,7 @@ Posts were written in WordPress by the Soro "SEO Autopilot" plugin. Soro only pu
 
 1. Pages project `tom-bell-main-website` (Matt's Cloudflare account) deploys `main` automatically. Preview: https://tom-bell-main-website.pages.dev
 2. Submit a test lead on the preview and confirm it arrives at matt@tombellcabinetry.com (check spam the first time).
-3. Add `tombellcabinetry.com` + `www` as custom domains on the Pages project, then update DNS. **Do not touch MX/email records.**
+3. Delete the `OG_HOST` environment variable (it points share cards at the pages.dev preview), then add `tombellcabinetry.com` + `www` as custom domains on the Pages project, then update DNS. **Do not touch MX/email records.**
 4. Google Search Console: submit `https://tombellcabinetry.com/sitemap-index.xml`.
 5. Decide the blog path (above) before turning off WordPress.
 6. Keep the WordPress backup.
