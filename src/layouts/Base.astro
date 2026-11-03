@@ -1,0 +1,86 @@
+---
+import '@fontsource/cormorant-garamond/300.css';
+import '@fontsource/cormorant-garamond/400.css';
+import '@fontsource/cormorant-garamond/300-italic.css';
+import '@fontsource/jost/300.css';
+import '@fontsource/jost/400.css';
+import '@fontsource/jost/500.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../site';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  schema?: object | object[];
+  noindex?: boolean;
+  solidHeader?: boolean;
+}
+const { title, description = '', image = '/img/og.jpg', type = 'website', schema, noindex = false, solidHeader = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL(image, site.url).href;
+
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  '@id': `${site.url}/#business`,
+  name: site.name,
+  url: `${site.url}/`,
+  telephone: site.phoneE164,
+  email: site.email,
+  image: `${site.url}/img/og.jpg`,
+  logo: `${site.url}/img/logo-rev.png`,
+  address: { '@type': 'PostalAddress', addressLocality: site.shopCity, addressRegion: site.region, addressCountry: 'US' },
+  areaServed: site.areas.map((name) => ({ '@type': 'City', name })),
+  founder: { '@type': 'Person', name: site.owner, jobTitle: 'Owner' },
+  sameAs: [site.social.instagram, site.social.facebook, site.social.linkedin],
+  knowsAbout: ['Custom cabinets', 'Kitchen remodeling', 'Custom millwork', 'Custom built-ins', 'Bathroom vanities', 'Architectural millwork'],
+};
+const schemas = [business, ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])];
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title}</title>
+  {description && <meta name="description" content={description}>}
+  <link rel="canonical" href={canonical}>
+  {noindex && <meta name="robots" content="noindex, follow">}
+  <meta property="og:type" content={type}>
+  <meta property="og:site_name" content={site.shortName}>
+  <meta property="og:title" content={title}>
+  {description && <meta property="og:description" content={description}>}
+  <meta property="og:url" content={canonical}>
+  <meta property="og:image" content={ogImage}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#14110f">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="sitemap" href="/sitemap-index.xml">
+  <slot name="head" />
+  {schemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+  <!-- Google tag (same ID as the WordPress site, so Analytics history continues) -->
+  <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${site.googleTag}`}></script>
+  <script is:inline define:vars={{ tag: site.googleTag }}>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', tag);
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <Header solid={solidHeader} />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+  <script>
+    import '../scripts/motion';
+  </script>
+</body>
+</html>

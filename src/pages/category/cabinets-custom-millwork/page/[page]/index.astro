@@ -1,0 +1,9 @@
+---
+import BlogIndex from '../../../../../components/BlogIndex.astro';
+import { pageCount } from '../../../../../lib/posts';
+export function getStaticPaths() {
+  return Array.from({ length: pageCount - 1 }, (_, i) => ({ params: { page: String(i + 2) } }));
+}
+const page = Number(Astro.params.page);
+---
+<BlogIndex page={page} basePath="/category/cabinets-custom-millwork/" title="Cabinets & custom millwork" seoTitle="Cabinets & Custom Millwork Archives - Tom Bell Cabinetry" description="Articles on custom cabinets, millwork, kitchen remodeling and renovation planning from Tom Bell Cabinetry in Nashville, TN." />

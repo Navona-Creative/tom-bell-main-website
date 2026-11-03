@@ -1,0 +1,26 @@
+# Carried over from the WordPress "Redirection" plugin
+/star-contributors/      /home-renovation-nashville/   301
+/home-renovations/       /home-renovation-nashville/   301
+
+# Old Yoast sitemaps -> Astro sitemap
+/sitemap_index.xml       /sitemap-index.xml            301
+/post-sitemap.xml        /sitemap-index.xml            301
+/page-sitemap.xml        /sitemap-index.xml            301
+/category-sitemap.xml    /sitemap-index.xml            301
+
+# WordPress system URLs that no longer exist
+/feed/                   /blog/                        301
+/feed                    /blog/                        301
+/comments/feed/          /blog/                        301
+/*/feed/                 /:splat/                      301
+/author/*                /about/                       301
+/wp-admin/*              /                             301
+/wp-login.php            /                             301
+/home/                   /                             301
+/services/               /home-renovation-nashville/   301
+
+# URLs without a trailing slash -> canonical slash versions
+/about                   /about/                       301
+/contact                 /contact/                     301
+/blog                    /blog/                        301
+/thank-you               /thank-you/                   301

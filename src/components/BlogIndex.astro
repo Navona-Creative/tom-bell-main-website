@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from './PageHero.astro';
+import PostGrid from './PostGrid.astro';
+import CtaBand from './CtaBand.astro';
+import { pageSlice, pageCount } from '../lib/posts';
+import { site } from '../site';
+
+interface Props { page: number; basePath?: string; title?: string; seoTitle?: string; description?: string; intro?: string }
+const {
+  page,
+  basePath = '/blog/',
+  title = 'Kitchen & cabinetry journal',
+  seoTitle = 'Kitchen & Cabinetry Blog | Tom Bell Cabinetry Nashville',
+  description = 'Kitchen design ideas, cabinetry trends, and Nashville renovation tips from Tom Bell Cabinetry—custom cabinets, millwork & remodeling insights for TN homeowners.',
+  intro = 'Kitchen design ideas, cabinetry advice and renovation planning tips for Nashville homeowners, from our shop in Madison, TN.',
+} = Astro.props;
+const list = pageSlice(page);
+const href = (n: number) => (n === 1 ? basePath : `${basePath}page/${n}/`);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: `${site.shortName} Journal`,
+  url: `${site.url}${basePath}`,
+  publisher: { '@id': `${site.url}/#business` },
+};
+---
+<Base title={page > 1 ? `${seoTitle} – Page ${page}` : seoTitle} description={description} schema={schema} solidHeader>
+  <PageHero title={page > 1 ? `${title}, page ${page}` : title} intro={intro} />
+  <section class="section" style="padding-top:clamp(40px,6vh,70px)">
+    <div class="wrap">
+      <PostGrid posts={list} eager={3} />
+      {pageCount > 1 && (
+        <nav class="pager" aria-label="Blog pages">
+          {page > 1 ? <a class="link-line" href={href(page - 1)}>Newer posts</a> : <span></span>}
+          <div class="pager__nums">
+            {Array.from({ length: pageCount }, (_, i) => i + 1).map((n) =>
+              n === page ? <span aria-current="page">{n}</span> : <a href={href(n)}>{n}</a>)}
+          </div>
+          {page < pageCount ? <a class="link-line" href={href(page + 1)}>Older posts</a> : <span></span>}
+        </nav>
+      )}
+    </div>
+  </section>
+  <CtaBand />
+</Base>

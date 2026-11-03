@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { site } from '../../site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  url: `${site.url}/contact/`,
+  mainEntity: { '@id': `${site.url}/#business` },
+};
+---
+<Base
+  title="Contact Tom Bell Cabinetry | Nashville, TN Cabinet Shop"
+  description="Request a free estimate for custom kitchen cabinets, remodels & millwork in Nashville, TN. Call Tom Bell Cabinetry at (615) 469-2781 or send us a message today."
+  schema={schema}
+  solidHeader
+>
+  <PageHero
+    title="Request a free estimate"
+    intro="Tell us about your space. We'll listen to your goals, answer your questions and give you clear guidance, so you can move forward with confidence and a plan that fits your home."
+  />
+
+  <section class="section light" style="padding-top:clamp(60px,9vh,100px)">
+    <div class="wrap">
+      <div class="split">
+        <aside data-fade>
+          <h2 class="h3">Call or text</h2>
+          <p class="note" style="margin:0 0 30px"><a href={site.phoneHref}>{site.phone}</a></p>
+          <h2 class="h3">Email</h2>
+          <p class="note" style="margin:0 0 30px"><a href={`mailto:${site.email}`}>{site.email}</a></p>
+          <h2 class="h3">Serving</h2>
+          <p class="muted" style="margin:0 0 30px;max-width:34ch">{site.areasShort}, from our shop in {site.shopCity}, TN.</p>
+          <h2 class="h3">Stay connected</h2>
+          <p style="margin:0;display:flex;gap:18px;flex-wrap:wrap">
+            <a class="link-line" href={site.social.instagram}>Instagram</a>
+            <a class="link-line" href={site.social.facebook}>Facebook</a>
+            <a class="link-line" href={site.social.google}>Google</a>
+          </p>
+        </aside>
+
+        <form class="form" id="estimate" method="post" action="/api/contact" novalidate data-fade>
+          <h2 class="h2 field--full" style="margin:0 0 6px">Tell us about your project</h2>
+          <p class="muted field--full" style="margin:0 0 6px;font-size:14px">Fields marked * are required.</p>
+          <div class="field"><label for="f-first">First name</label><input id="f-first" name="first_name" autocomplete="given-name"></div>
+          <div class="field"><label for="f-last">Last name</label><input id="f-last" name="last_name" autocomplete="family-name"></div>
+          <div class="field"><label for="f-email">Email *</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="f-phone">Phone *</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required></div>
+          <div class="field field--full"><label for="f-msg">Message *</label><textarea id="f-msg" name="message" required placeholder="The room, the rough size, your timing and anything else we should know"></textarea></div>
+          <label class="check field--full"><input type="checkbox" name="sms_marketing" value="yes"><span>I agree to receive occasional marketing SMS from Tom Bell Cabinetry &amp; Custom about promotional materials and special offers. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe or HELP for help.</span></label>
+          <label class="check field--full"><input type="checkbox" name="sms_transactional" value="yes"><span>I agree to receive SMS text messages from Tom Bell Cabinetry &amp; Custom at the phone number provided regarding appointments, project updates and occasional promotions. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe or HELP for help. Consent is not a condition of purchase.</span></label>
+          <p class="muted field--full" style="font-size:13px;margin:0">See our <a href="/privacy-policy/" style="text-decoration:underline">Privacy Policy</a> and <a href="/terms/" style="text-decoration:underline">Terms</a>.</p>
+          <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+          <input type="hidden" name="page" value="/contact/">
+          <div class="form__msg" id="formMsg" role="alert"></div>
+          <div class="field--full"><button class="btn btn--solid" type="submit">Request My Free Estimate</button></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.getElementById('estimate') as HTMLFormElement;
+  const msg = document.getElementById('formMsg')!;
+  const params = new URLSearchParams(location.search);
+  if (params.get('error')) { msg.textContent = 'Something went wrong sending your request. Please call or text (615) 469-2781, or try again.'; msg.classList.add('is-on'); }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.classList.remove('is-on');
+    const bad = (['email', 'phone', 'message'] as const).find((n) => !(form.elements.namedItem(n) as HTMLInputElement).value.trim());
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+    if (bad || !/^\S+@\S+\.\S+$/.test(email)) {
+      msg.textContent = 'Please add your email, phone and a short message.';
+      msg.classList.add('is-on');
+      return;
+    }
+    const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(String(res.status));
+      location.href = '/thank-you/';
+    } catch {
+      msg.textContent = 'Something went wrong sending your request. Please call or text (615) 469-2781, or try again.';
+      msg.classList.add('is-on');
+      btn.disabled = false; btn.textContent = 'Request My Free Estimate';
+    }
+  });
+</script>

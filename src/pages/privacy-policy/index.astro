@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import legal from '../../data/legal.json';
+const page = (legal as Record<string, { title: string; content: string; seoTitle: string; seoDescription: string }>)['privacy-policy'];
+---
+<Base title={page.seoTitle || page.title} description={page.seoDescription} solidHeader>
+  <PageHero title={page.title} />
+  <section class="section light" style="padding-top:clamp(50px,8vh,90px)">
+    <div class="wrap"><div class="prose" set:html={page.content} /></div>
+  </section>
+</Base>

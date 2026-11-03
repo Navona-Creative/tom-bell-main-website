@@ -1,0 +1,43 @@
+---
+import { site, services, company } from '../site';
+const year = new Date().getFullYear();
+---
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__grid">
+      <div>
+        <a class="foot__logo" href="/"><img src="/img/logo-rev.png" alt={site.name} width="600" height="235" loading="lazy"></a>
+        <p class="muted" style="max-width:32ch">Custom cabinetry, millwork and remodeling, built in our {site.shopCity}, TN shop for homes across Middle Tennessee.</p>
+        <div class="social">
+          <a href={site.social.instagram} aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></svg></a>
+          <a href={site.social.facebook} aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a>
+          <a href={site.social.linkedin} aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg></a>
+          <a href={site.social.google} aria-label="Google reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></a>
+        </div>
+      </div>
+      <nav aria-label="Services footer">
+        <h2>Services</h2>
+        <ul>{services.map((s) => <li><a href={s.href}>{s.long}</a></li>)}</ul>
+      </nav>
+      <nav aria-label="Company footer">
+        <h2>Company</h2>
+        <ul>
+          {company.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+          <li><a href="/contact/">Free Estimate</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2>Contact</h2>
+        <p><a href={site.phoneHref}>{site.phone}</a> <span class="muted">· call or text</span></p>
+        <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        <p class="muted">Shop in {site.shopCity}, TN</p>
+        <p class="muted" style="margin-top:18px">Serving {site.areasShort}</p>
+      </div>
+    </div>
+    <div class="foot__base">
+      <span>© {year} {site.name}</span>
+      <span class="credit">Site by <a href={site.credit.url}>{site.credit.name}</a></span>
+      <nav aria-label="Legal"><a href="/privacy-policy/">Privacy</a><a href="/terms/">Terms</a></nav>
+    </div>
+  </div>
+</footer>

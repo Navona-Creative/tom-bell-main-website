@@ -1,0 +1,19 @@
+---
+import { site } from '../site';
+import Arrow from './Arrow.astro';
+---
+<section class="quote light section" aria-label="Client reviews">
+  <div class="wrap">
+    <span class="stars" role="img" aria-label="5 out of 5 stars">
+      <svg width="90" height="16" viewBox="0 0 90 16" aria-hidden="true" fill="currentColor"><path id="star" d="M8 0l2.4 5 5.6.6-4.2 3.8 1.2 5.6L8 12.2 3 15l1.2-5.6L0 5.6 5.6 5z"/><use href="#star" x="18.5"/><use href="#star" x="37"/><use href="#star" x="55.5"/><use href="#star" x="74"/></svg>
+    </span>
+    <blockquote data-fade>
+      <p>“The craftsmanship is second to none, their responsiveness is great, and they are very professional. We could not be happier!”</p>
+      <cite>Dane Smith · Primary bedroom, bath &amp; closet</cite>
+    </blockquote>
+    <div class="quote__more" data-fade>
+      <div><p>“Attention to detail, punctual, and professional.”</p><cite>Eric Anderson</cite></div>
+      <a class="link-line" href={site.social.google}>Read Google Reviews <Arrow /></a>
+    </div>
+  </div>
+</section>

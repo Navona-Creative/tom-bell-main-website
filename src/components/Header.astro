@@ -1,0 +1,48 @@
+---
+import { site, services, company } from '../site';
+interface Props { solid?: boolean }
+const { solid = false } = Astro.props;
+const path = Astro.url.pathname;
+const cur = (href: string) => (path === href ? 'page' : undefined);
+---
+<header class:list={['bar', { 'bar--solid': solid }]} id="bar">
+  <div class="bar__in">
+    <button class="menu-btn" id="menuOpen" aria-expanded="false" aria-controls="menu">
+      <span class="menu-btn__lines" aria-hidden="true"><i></i><i></i></span><span class="lbl">Menu</span>
+    </button>
+    <a class="logo" href="/" aria-label={`${site.name}, home`}><img src="/img/logo-rev.png" alt={site.name} width="600" height="235"></a>
+    <div class="bar__right">
+      <a class="bar__phone" href={site.phoneHref}>{site.phone}</a>
+      <a class="btn" href="/contact/">Free Estimate</a>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Site menu">
+  <div class="menu__top">
+    <button class="menu-btn menu-btn--x" id="menuClose"><span class="menu-btn__lines" aria-hidden="true"><i></i><i></i></span><span class="lbl">Close</span></button>
+    <a class="logo" href="/"><img src="/img/logo-rev.png" alt={site.name} width="600" height="235"></a>
+    <div class="bar__right"><a class="btn btn--solid" href="/contact/">Request a Free Estimate</a></div>
+  </div>
+  <div class="menu__grid">
+    <nav aria-label="Services">
+      <ul class="menu__list">
+        {services.map((s, i) => <li><a href={s.href} aria-current={cur(s.href)}><span>{String(i + 1).padStart(2, '0')}</span>{s.label}</a></li>)}
+      </ul>
+    </nav>
+    <div>
+      <nav aria-label="Company">
+        <ul class="menu__list menu__list--small">
+          {company.map((s, i) => <li><a href={s.href} aria-current={cur(s.href)}><span>{String(i + services.length + 1).padStart(2, '0')}</span>{s.label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="menu__aside" style="margin-top:48px">
+        <h2>Call or text</h2>
+        <p><a href={site.phoneHref}>{site.phone}</a><br><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        <h2>Serving</h2>
+        <p class="muted">{site.areasShort}</p>
+      </div>
+    </div>
+    <div class="menu__img"><img src="/img/library.webp" alt="Walnut library built-ins with a chandelier" loading="lazy" width="1120" height="1400"></div>
+  </div>
+</div>

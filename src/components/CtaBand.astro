@@ -1,0 +1,20 @@
+---
+import { site } from '../site';
+interface Props { title?: string; text?: string; image?: string }
+const {
+  title = 'Fall in love with your kitchen again',
+  text = "Tell us about your space. We'll measure it, plan it and give you a clear price, with no pressure.",
+  image = '/img/cta.webp',
+} = Astro.props;
+---
+<section class="cta" aria-labelledby="cta-h">
+  <div class="cta__bg"><img data-par-bg src={image} alt="" loading="lazy" width="2000" height="1019"></div>
+  <div class="wrap" data-fade>
+    <h2 id="cta-h">{title}</h2>
+    <p>{text}</p>
+    <div class="cta__actions">
+      <a class="btn btn--solid" href="/contact/">Request a Free Estimate</a>
+      <a class="link-line" href={site.phoneHref}>Call or text {site.phone}</a>
+    </div>
+  </div>
+</section>

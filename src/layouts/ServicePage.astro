@@ -1,0 +1,105 @@
+---
+import Base from './Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Reviews from '../components/Reviews.astro';
+import Arrow from '../components/Arrow.astro';
+import { site } from '../site';
+import type { Service } from '../data/services';
+
+interface Props { service: Service }
+const { service: s } = Astro.props;
+const url = new URL(s.path, site.url).href;
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: s.h1,
+    serviceType: s.name,
+    url,
+    description: s.seoDescription,
+    provider: { '@id': `${site.url}/#business` },
+    areaServed: site.areas.map((name) => ({ '@type': 'City', name })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: `${site.url}/home-renovation-nashville/` },
+      { '@type': 'ListItem', position: 3, name: s.name, item: url },
+    ],
+  },
+];
+const g = s.gallery;
+---
+<Base title={s.seoTitle} description={s.seoDescription} image={s.hero} schema={schema}>
+  <PageHero title={s.h1} intro={s.intro} image={s.hero} imageAlt={s.heroAlt} crumb={{ label: 'Services', href: '/home-renovation-nashville/' }}>
+    <div data-hero-fade style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+      <a class="btn btn--solid" href="/contact/">Request a Free Estimate</a>
+      <a class="link-line" href={site.phoneHref}>{site.phone}</a>
+    </div>
+  </PageHero>
+
+  <section class="section light">
+    <div class="wrap wrap--narrow" data-fade>
+      {s.lede.map((p, i) => i === 0 ? <p class="lede">{p}</p> : <p class="prose" style="margin:0;max-width:62ch">{p}</p>)}
+    </div>
+  </section>
+
+  {s.sections.map((sec, i) => (
+    <section class:list={['section--tight', { light: i % 2 === 1 }]} style={i === 0 ? 'padding-top:clamp(90px,14vh,170px)' : ''}>
+      <div class="wrap">
+        <div class="split">
+          <h2 class="h2 sticky-top" data-fade>{sec.title}</h2>
+          <div data-fade>
+            {sec.kind === 'list' && (
+              <ul class="list-lines">
+                {sec.items.map((it) => Array.isArray(it)
+                  ? <li><strong>{it[0]}</strong>{it[1] && <span>{it[1]}</span>}</li>
+                  : <li><strong style="font-size:21px;font-family:var(--sans);font-weight:300">{it}</strong></li>)}
+              </ul>
+            )}
+            {sec.kind === 'timeline' && (
+              <>
+                <ol class="timeline">{sec.items.map(([when, what]) => <li><b>{when}</b><span>{what}</span></li>)}</ol>
+                {sec.note && <p class="muted" style="margin-top:24px;max-width:60ch">{sec.note}</p>}
+              </>
+            )}
+            {sec.kind === 'text' && sec.body.map((p) => <p class="note" style="margin:0 0 18px">{p}</p>)}
+          </div>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section" aria-label="Project photos">
+    <div class="wrap">
+      <div class="gallery">
+        <figure class="g-a" data-reveal><img src={`/img/${g[0][0]}.webp`} alt={g[0][1]} loading="lazy" width="1600" height="1200"></figure>
+        <figure class="g-b" data-reveal><img src={`/img/${g[1][0]}.webp`} alt={g[1][1]} loading="lazy" width="960" height="1200"></figure>
+        <figure class="g-c" data-reveal><img src={`/img/${g[2][0]}.webp`} alt={g[2][1]} loading="lazy" width="960" height="1200"></figure>
+        <figure class="g-d" data-reveal><img src={`/img/${g[3][0]}.webp`} alt={g[3][1]} loading="lazy" width="960" height="1200"></figure>
+        <figure class="g-e" data-reveal><img src={`/img/${g[4][0]}.webp`} alt={g[4][1]} loading="lazy" width="960" height="1200"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-top:0">
+    <div class="wrap">
+      <div class="split">
+        <h2 class="h2" data-fade>{s.areasTitle}</h2>
+        <div data-fade>
+          <p class="note" style="margin:0 0 30px">{s.areas}</p>
+          <p class="muted" style="margin:0 0 10px">Related services</p>
+          <div style="display:flex;gap:28px;flex-wrap:wrap">
+            {s.related.map((r) => <a class="link-line" href={r.href}>{r.label} <Arrow /></a>)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Reviews />
+  <CtaBand title="Get a real number" text={`Call ${site.phone} or request an estimate. We'll give you an honest range on the first visit, not a mystery quote three weeks later.`} />
+</Base>

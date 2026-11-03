@@ -1,0 +1,31 @@
+---
+interface Props {
+  title: string;
+  intro?: string;
+  image?: string;
+  imageAlt?: string;
+  crumb?: { label: string; href: string };
+}
+const { title, intro, image, imageAlt = '', crumb } = Astro.props;
+---
+{image ? (
+  <section class="phero" aria-labelledby="page-title">
+    <div class="phero__media"><img data-hero-img src={image} alt={imageAlt} fetchpriority="high" width="1800" height="1350"></div>
+    <div class="phero__shade"></div>
+    <div class="wrap" data-hero-content>
+      {crumb && <p class="crumbs" data-hero-fade><a href="/">Home</a> / <a href={crumb.href}>{crumb.label}</a></p>}
+      <h1 id="page-title">{title}</h1>
+      {intro && <p data-hero-fade>{intro}</p>}
+      <slot />
+    </div>
+  </section>
+) : (
+  <section class="phero phero--short" aria-labelledby="page-title">
+    <div class="wrap">
+      {crumb && <p class="crumbs"><a href="/">Home</a> / <a href={crumb.href}>{crumb.label}</a></p>}
+      <h1 id="page-title">{title}</h1>
+      {intro && <p>{intro}</p>}
+      <slot />
+    </div>
+  </section>
+)}

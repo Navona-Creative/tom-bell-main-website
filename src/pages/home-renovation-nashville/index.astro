@@ -1,0 +1,75 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Reviews from '../../components/Reviews.astro';
+import Arrow from '../../components/Arrow.astro';
+import { site } from '../../site';
+
+const offerings = [
+  { title: 'Full Kitchen Renovations', img: 'vaulted', alt: 'Vaulted kitchen with white cabinetry and a walnut island', href: '/kitchen-remodeling-nashville/',
+    text: 'Complete kitchen transformations, thoughtfully designed, expertly built, and managed from start to finish.' },
+  { title: 'Custom Cabinets', img: 'cabinets', alt: 'Custom vanity with a tall walnut cabinet', href: '/custom-cabinets-nashville/',
+    text: 'Cabinetry built to your dimensions in our Madison shop, for kitchens, baths, closets and laundry rooms.' },
+  { title: 'RTA Stock Cabinet Kitchen Remodels', img: 'g11', alt: 'Kitchen run with long drawers', href: '/contact/',
+    text: 'High-quality cabinet upgrades with faster timelines and beautiful results at a more accessible price point.' },
+  { title: 'Bathroom Renovations', img: 'g8', alt: 'Black double vanity with arched mirrors', href: '/contact/',
+    text: 'Functional, refined bathroom upgrades designed for comfort, durability and everyday ease.' },
+  { title: 'Custom Woodworking & Built-Ins', img: 'library', alt: 'Walnut library built-ins', href: '/custom-built-ins-nashville/',
+    text: 'One-of-a-kind built-ins and custom pieces crafted to fit your space perfectly.' },
+  { title: 'Architectural Millwork', img: 'g9', alt: 'Walnut-paneled study', href: '/custom-millwork-nashville/',
+    text: 'Trim, moulding and detailed finishes that elevate the look and feel of your home.' },
+];
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Home renovation services in Nashville, TN',
+  itemListElement: offerings.map((o, i) => ({ '@type': 'ListItem', position: i + 1, name: o.title, url: new URL(o.href, site.url).href })),
+};
+---
+<Base
+  title="Custom Cabinetry & Remodeling Services | Nashville, TN"
+  description="Custom kitchen remodels, cabinetry, bathroom renovations & architectural millwork in Nashville, TN. Expert craftsmanship from Tom Bell Cabinetry & Custom."
+  image="/img/library.webp"
+  schema={schema}
+>
+  <PageHero
+    title="Home renovation services in Nashville"
+    intro="Our services are designed to make home renovation feel simple, manageable and rewarding. Whether you're planning a full kitchen remodel or a custom woodworking project, you'll understand your options, your investment and exactly what to expect at every step."
+    image="/img/library.webp"
+    imageAlt="Walnut library with built-in shelving and a chandelier"
+  />
+
+  <section class="section light" aria-labelledby="svc-h">
+    <div class="wrap">
+      <div class="split" style="margin-bottom:clamp(50px,8vh,90px)" data-fade>
+        <h2 class="h2" id="svc-h">Custom home remodeling, designed for the way you live</h2>
+        <p class="note" style="margin:0;align-self:end">Pantries, laundry rooms, mudrooms and specialty projects are completed with the same care as our kitchens.</p>
+      </div>
+      <div class="cards">
+        {offerings.map((o) => (
+          <a class="card" href={o.href} data-fade>
+            <div class="card__img"><img src={`/img/${o.img}.webp`} alt={o.alt} loading="lazy" width="960" height="1200"></div>
+            <h3>{o.title}</h3>
+            <p>{o.text}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="other-h">
+    <div class="wrap">
+      <div class="split">
+        <h2 class="h2" id="other-h" data-fade>Other remodeling and renovations</h2>
+        <div data-fade>
+          <p class="note" style="margin:0 0 30px">Pantries, laundry rooms, mudrooms and specialty projects. If it involves wood and a room that needs to work better, we'd like to hear about it.</p>
+          <a class="link-line" href="/contact/">Tell us about your project <Arrow /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Reviews />
+  <CtaBand />
+</Base>

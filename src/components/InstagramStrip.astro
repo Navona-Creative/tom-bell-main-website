@@ -1,0 +1,43 @@
+---
+// Project photos that link to Instagram. Swap for a live feed (e.g. Behold JSON
+// fetched at build) once the account is connected; markup stays the same.
+import { site } from '../site';
+const row1 = ['g2', 'g6', 'g13', 'g3', 'g8', 'g14', 'g1', 'g10'];
+const row2 = ['g5', 'g12', 'g7', 'builtins', 'g4', 'g9', 'g11', 'kitchen'];
+---
+<section class="ig" aria-labelledby="ig-h">
+  <div class="wrap">
+    <div class="ig__head" data-fade>
+      <div>
+        <h2 class="h2" id="ig-h">On Instagram</h2>
+        <p class="muted">New projects and work in progress from the shop.</p>
+      </div>
+      <a class="btn" href={site.social.instagram}>{site.social.instagramHandle}</a>
+    </div>
+  </div>
+  {[row1, row2].map((row, r) => (
+    <div class="marquee-row">
+      <div class="marquee" data-marquee={r ? 'right' : 'left'}>
+        {row.map((n) => (
+          <a class="tile" href={site.social.instagram} aria-label="View on Instagram"><img src={`/img/${n}.webp`} alt="" loading="lazy" width="960" height="1200"><span aria-hidden="true">View on Instagram</span></a>
+        ))}
+      </div>
+    </div>
+  ))}
+</section>
+
+<style>
+.ig{padding:clamp(100px,16vh,180px) 0 clamp(80px,12vh,140px);overflow:hidden}
+.ig__head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:54px;flex-wrap:wrap}
+.ig__head .h2{margin:0 0 10px}
+.ig__head p{margin:0}
+.marquee-row{display:flex;overflow:hidden}
+.marquee{display:flex;width:max-content;gap:18px;margin-bottom:18px;will-change:transform}
+.tile{position:relative;flex:0 0 auto;width:clamp(200px,20vw,300px);aspect-ratio:4/5;overflow:hidden;background:var(--ink-2)}
+.tile:nth-child(3n+2){aspect-ratio:1/1}
+.tile:nth-child(4n){width:clamp(240px,26vw,380px);aspect-ratio:4/3}
+.tile img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1),filter .6s}
+.tile:hover img{transform:scale(1.05);filter:brightness(.7)}
+.tile span{position:absolute;left:14px;bottom:12px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:0;transform:translateY(6px);transition:.5s}
+.tile:hover span{opacity:1;transform:none}
+</style>

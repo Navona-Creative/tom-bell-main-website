@@ -1,0 +1,74 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Reviews from '../../components/Reviews.astro';
+import { site } from '../../site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  url: `${site.url}/about/`,
+  mainEntity: { '@type': 'Person', name: site.owner, jobTitle: 'Owner', worksFor: { '@id': `${site.url}/#business` } },
+};
+---
+<Base
+  title="About Tom Bell Cabinetry | Nashville Cabinet Shop"
+  description="Nashville's trusted custom cabinet makers. Meet our team with 15+ years experience crafting kitchens, millwork and built-ins with precision."
+  image="/img/g9.webp"
+  schema={schema}
+>
+  <PageHero
+    title="About Tom Bell Cabinetry"
+    intro="Built on the belief that great craftsmanship and clear communication should go hand in hand."
+    image="/img/g9.webp"
+    imageAlt="Walnut-paneled study with a glass door"
+  />
+
+  <section class="statement-sec section light">
+    <div class="wrap wrap--narrow">
+      <p class="lede" style="max-width:none" data-scrub-words>We bring decades of woodworking experience to every project, combining thoughtful design, quality materials and hands-on care to create kitchens and living spaces that feel personal, functional and built to last.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="matt-h">
+    <div class="wrap">
+      <div class="split split--even" style="align-items:center">
+        <div class="media-frame media-frame--tall" data-reveal style="max-width:520px">
+          <img src="/img/matt-miller.webp" alt="Matt Miller, owner of Tom Bell Cabinetry & Custom" loading="lazy" width="786" height="786">
+        </div>
+        <div data-fade>
+          <p class="muted" style="margin:0 0 6px">Owner</p>
+          <h2 class="h2" id="matt-h">Matt Miller</h2>
+          <p style="margin:0 0 18px;max-width:52ch">Matt Miller is the owner of Tom Bell Cabinetry &amp; Custom. He leads every part of the business, from the first consultation and estimate through scheduling, build coordination and final installation, so each client has one clear point of contact from start to finish.</p>
+          <p class="muted" style="margin:0;max-width:52ch">With a focus on systems, efficiency and clear communication, Matt makes sure every kitchen, built-in and millwork project is delivered smoothly and built in our Madison, TN shop to the standard our clients expect.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section light" aria-labelledby="build-h">
+    <div class="wrap">
+      <div class="split">
+        <h2 class="h2 sticky-top" id="build-h" data-fade>How we build</h2>
+        <ul class="list-lines" data-fade>
+          <li><strong>Built in-house</strong><span>Our own crew builds your cabinetry in our Madison, TN shop. Nothing is ordered from a catalog and shipped in a box.</span></li>
+          <li><strong>The right material for each part</strong><span>Solid hardwood where it performs best, high-density fiberboard for painted panels that need to stay flat, and plywood boxes measured to fit your home precisely and built to last.</span></li>
+          <li><strong>Clear communication</strong><span>You'll know your options, your investment and what to expect at every step, from the first call to the final install.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Project photos">
+    <div class="wrap">
+      <div class="gallery">
+        <figure class="g-a" data-reveal><img src="/img/vaulted.webp" alt="Vaulted kitchen with white cabinetry and a walnut island" loading="lazy" width="1600" height="1200"></figure>
+        <figure class="g-b" data-reveal><img src="/img/g1.webp" alt="Walnut library with arched shelving" loading="lazy" width="960" height="1200"></figure>
+      </div>
+    </div>
+  </section>
+
+  <Reviews />
+  <CtaBand title="Ready to start your project?" />
+</Base>
