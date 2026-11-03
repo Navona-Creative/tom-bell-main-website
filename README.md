@@ -25,15 +25,16 @@ npx wrangler pages dev dist   # serves dist/ + functions/ (contact form) locally
 
 ### Contact form email
 
-The form posts to `functions/api/contact.js`, which hands each request to the **`tom-bell-contact-mailer`** Worker (same Cloudflare account) through the Pages service binding `MAILER`. The Worker sends it with Cloudflare Email Service:
+The form posts to `functions/api/contact.js` (Cloudflare Pages Function), which sends each request through **Resend** (resend.com, free tier):
 
 - From: `Tom Bell Cabinetry Website <website@tombellcabinetry.com>`
-- To: `matt@tombellcabinetry.com` (Worker variable `TO_EMAIL`)
+- To: `matt@tombellcabinetry.com` (override with Pages variable `TO_EMAIL`)
 - Reply-To: the visitor's email, so Matt can reply directly
+- Needs the Pages secret `RESEND_API_KEY`, and `tombellcabinetry.com` verified in Resend (DKIM `resend._domainkey`, plus SPF/MX on the `send` subdomain). Email for the domain itself stays on Google Workspace (root MX records unchanged).
 
-`tombellcabinetry.com` must be onboarded in **Email Service** (Cloudflare dashboard > Compute & AI > Email Service > Onboard Domain) so Cloudflare can add the DKIM and bounce records. Email for the domain itself stays on Google Workspace (MX records unchanged).
+Cloudflare Email Service was not used because it requires the Workers Paid plan. The unused `tom-bell-contact-mailer` Worker and the `MAILER` binding can be deleted.
 
-Email authentication on the domain: SPF `v=spf1 include:_spf.google.com include:tombellcabinetry.com.spf.auto.dnssmarthost.net ip4:35.212.79.162 ~all` (fixed 2026-11-03; remove the SiteGround include and IP after WordPress is retired), Google DKIM `google._domainkey`, Cloudflare Email Service DKIM, DMARC `p=quarantine`.
+Email authentication on the domain: SPF `v=spf1 include:_spf.google.com include:tombellcabinetry.com.spf.auto.dnssmarthost.net ip4:35.212.79.162 ~all` (fixed 2026-11-03; remove the SiteGround include and IP after WordPress is retired), Google DKIM `google._domainkey`, Resend DKIM, DMARC `p=quarantine`.
 
 ## Structure
 
@@ -45,7 +46,7 @@ Email authentication on the domain: SPF `v=spf1 include:_spf.google.com include:
 - `public/wp-content/uploads/...`: blog featured images at their original WordPress paths.
 - `public/img/`: site photography (WebP). `hero-kitchen.webp` (homepage hero) is licensed Adobe Stock ID 377231448.
 - `public/_redirects`: old Redirection-plugin rules, Yoast sitemaps, feeds, WP system URLs.
-- `functions/api/contact.js`: contact form handler (Cloudflare Pages Function), emails via the mailer Worker.
+- `functions/api/contact.js`: contact form handler (Cloudflare Pages Function), emails via Resend.
 - `src/scripts/motion.ts`: GSAP ScrollTrigger + Lenis scroll animation. Respects `prefers-reduced-motion`.
 
 ## Blog

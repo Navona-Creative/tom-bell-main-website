@@ -1,8 +1,7 @@
 // Cloudflare Pages Function: POST /api/contact
-// Emails each estimate request to Matt via the "tom-bell-contact-mailer" Worker
-// (Cloudflare Email Service, sending as website@tombellcabinetry.com).
-// The Worker is attached to this Pages project as the service binding MAILER
-// (Pages > Settings > Bindings).
+// Emails each estimate request to Matt through Resend (resend.com, free tier),
+// sending as website@tombellcabinetry.com with Reply-To set to the visitor.
+// Pages > Settings > Variables: RESEND_API_KEY (secret), optional TO_EMAIL / FROM_EMAIL.
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -32,20 +31,38 @@ export async function onRequestPost({ request, env }) {
     return wantsJson ? json({ ok: false, error: 'missing_fields' }, 400) : done(false);
   }
 
-  if (!env.MAILER) {
-    console.error('contact: MAILER service binding missing');
+  if (!env.RESEND_API_KEY) {
+    console.error('contact: RESEND_API_KEY missing');
     return done(false);
   }
+  const name = [lead.first_name, lead.last_name].filter(Boolean).join(' ') || lead.email;
+  const rows = [
+    ['Name', name], ['Email', lead.email], ['Phone', lead.phone],
+    ['Message', lead.message], ['Page', lead.page], ['Submitted', lead.submitted_at],
+  ];
+  const esc = (v) => v.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const text = rows.map(([k, v]) => `${k}: ${v}`).join('\n');
+  const html = `<h2 style="font-family:Georgia,serif;font-weight:normal">New estimate request</h2>
+<table cellpadding="6" style="font-family:Arial,sans-serif;font-size:14px;border-collapse:collapse">${rows
+    .map(([k, v]) => `<tr><td style="color:#666;vertical-align:top"><b>${k}</b></td><td style="white-space:pre-wrap">${esc(v)}</td></tr>`)
+    .join('')}</table>`;
   try {
-    const res = await env.MAILER.fetch('https://mailer/send', {
+    const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(lead),
+      headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        from: `Tom Bell Cabinetry Website <${env.FROM_EMAIL || 'website@tombellcabinetry.com'}>`,
+        to: [env.TO_EMAIL || 'matt@tombellcabinetry.com'],
+        reply_to: lead.email,
+        subject: `New estimate request: ${name}`,
+        text,
+        html,
+      }),
     });
-    if (!res.ok) console.error('contact: mailer error', res.status, await res.text());
+    if (!res.ok) console.error('contact: resend error', res.status, await res.text());
     return done(res.ok);
   } catch (e) {
-    console.error('contact: mailer unreachable', e && e.message);
+    console.error('contact: resend unreachable', e && e.message);
     return done(false);
   }
 }
