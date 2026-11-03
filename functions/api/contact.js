@@ -1,8 +1,8 @@
 // Cloudflare Pages Function: POST /api/contact
-// Replaces Gravity Forms + the GHL add-on. Sends each estimate request to:
-//   1. GoHighLevel, via an Inbound Webhook trigger (env GHL_WEBHOOK_URL)  <- primary
-//   2. Email, via Resend (env RESEND_API_KEY, LEAD_EMAIL_TO, LEAD_EMAIL_FROM) <- optional backup
-// Set these in Cloudflare Pages > Settings > Variables and Secrets (Production + Preview).
+// Emails each estimate request to Matt via the "tom-bell-contact-mailer" Worker
+// (Cloudflare Email Service, sending as website@tombellcabinetry.com).
+// The Worker is attached to this Pages project as the service binding MAILER
+// (Pages > Settings > Bindings).
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -25,54 +25,29 @@ export async function onRequestPost({ request, env }) {
     email: get('email'),
     phone: get('phone'),
     message: get('message'),
-    sms_marketing_consent: get('sms_marketing') === 'yes',
-    sms_transactional_consent: get('sms_transactional') === 'yes',
-    source: 'tombellcabinetry.com contact form',
     page: get('page') || '/contact/',
-    submitted_at: new Date().toISOString(),
-    ip: request.headers.get('cf-connecting-ip') || '',
+    submitted_at: new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' }) + ' CT',
   };
   if (!lead.email || !/^\S+@\S+\.\S+$/.test(lead.email) || !lead.phone || !lead.message) {
     return wantsJson ? json({ ok: false, error: 'missing_fields' }, 400) : done(false);
   }
 
-  const jobs = [];
-  if (env.GHL_WEBHOOK_URL) {
-    jobs.push(fetch(env.GHL_WEBHOOK_URL, {
+  if (!env.MAILER) {
+    console.error('contact: MAILER service binding missing');
+    return done(false);
+  }
+  try {
+    const res = await env.MAILER.fetch('https://mailer/send', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(lead),
-    }).then((r) => r.ok));
-  }
-  if (env.RESEND_API_KEY && env.LEAD_EMAIL_TO) {
-    const name = [lead.first_name, lead.last_name].filter(Boolean).join(' ') || 'Website visitor';
-    const text = [
-      `Name: ${name}`, `Email: ${lead.email}`, `Phone: ${lead.phone}`,
-      `SMS marketing consent: ${lead.sms_marketing_consent ? 'Yes' : 'No'}`,
-      `SMS updates consent: ${lead.sms_transactional_consent ? 'Yes' : 'No'}`,
-      '', lead.message,
-    ].join('\n');
-    jobs.push(fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
-      body: JSON.stringify({
-        from: env.LEAD_EMAIL_FROM || 'Tom Bell Website <website@tombellcabinetry.com>',
-        to: env.LEAD_EMAIL_TO.split(',').map((s) => s.trim()),
-        reply_to: lead.email,
-        subject: `New estimate request: ${name}`,
-        text,
-      }),
-    }).then((r) => r.ok));
-  }
-
-  if (!jobs.length) {
-    console.error('contact: no delivery configured (set GHL_WEBHOOK_URL and/or RESEND_API_KEY + LEAD_EMAIL_TO)');
+    });
+    if (!res.ok) console.error('contact: mailer error', res.status, await res.text());
+    return done(res.ok);
+  } catch (e) {
+    console.error('contact: mailer unreachable', e && e.message);
     return done(false);
   }
-  const results = await Promise.allSettled(jobs);
-  const delivered = results.some((r) => r.status === 'fulfilled' && r.value === true);
-  if (!delivered) console.error('contact: delivery failed', JSON.stringify(results));
-  return done(delivered);
 }
 
 export const onRequestGet = () => new Response(null, { status: 405, headers: { allow: 'POST' } });

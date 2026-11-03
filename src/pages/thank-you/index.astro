@@ -12,12 +12,11 @@ import { site } from '../../site';
   <section class="section light" style="padding-top:clamp(60px,9vh,100px)">
     <div class="wrap">
       <div class="split">
+        <h2 class="h2">What happens next</h2>
         <div>
-          <h2 class="h2">Prefer a quick phone call?</h2>
-          <p class="muted" style="max-width:44ch">If you'd like to connect sooner, grab a time on our calendar. It's the fastest way to talk through your project and next steps. If you'd rather not schedule right now, no problem. We'll review your request and reach out shortly.</p>
-        </div>
-        <div class="booking">
-          <iframe src={site.bookingWidget} title="Schedule a call with Tom Bell Cabinetry" loading="lazy" style="width:100%;border:none;min-height:760px;background:#fff"></iframe>
+          <p class="note" style="margin:0 0 24px">Matt will review your request and reach out, usually within one business day, to talk through your project and set up a time to measure.</p>
+          <p class="muted" style="margin:0 0 28px">Need to reach us sooner? Call or text {site.phone}.</p>
+          <a class="btn btn--solid" href={site.phoneHref}>Call or text {site.phone}</a>
         </div>
       </div>
     </div>

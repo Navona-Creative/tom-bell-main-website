@@ -19,7 +19,7 @@ interface Props {
   noindex?: boolean;
   solidHeader?: boolean;
 }
-const { title, description = '', image = '/img/og.jpg', type = 'website', schema, noindex = false, solidHeader = false } = Astro.props;
+const { title, description = '', image = '/img/share-card.jpg', type = 'website', schema, noindex = false, solidHeader = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const ogImage = new URL(image, site.url).href;
 
@@ -31,7 +31,7 @@ const business = {
   url: `${site.url}/`,
   telephone: site.phoneE164,
   email: site.email,
-  image: `${site.url}/img/og.jpg`,
+  image: `${site.url}/img/share-card.jpg`,
   logo: `${site.url}/img/logo-rev.png`,
   address: { '@type': 'PostalAddress', addressLocality: site.shopCity, addressRegion: site.region, addressCountry: 'US' },
   areaServed: site.areas.map((name) => ({ '@type': 'City', name })),
@@ -56,6 +56,8 @@ const schemas = [business, ...(schema ? (Array.isArray(schema) ? schema : [schem
   {description && <meta property="og:description" content={description}>}
   <meta property="og:url" content={canonical}>
   <meta property="og:image" content={ogImage}>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#14110f">
   <link rel="icon" href="/favicon.png" type="image/png">

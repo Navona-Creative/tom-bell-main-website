@@ -14,7 +14,6 @@ export const site = {
   areasShort: 'Nashville, Belle Meade, Brentwood, Franklin & Middle Tennessee',
   owner: 'Matt Miller',
   googleTag: 'GT-WBKSTRVJ',
-  bookingWidget: 'https://api.leadconnectorhq.com/widget/booking/AQnDSiFIBMDqp0hU0t3o',
   social: {
     instagram: 'https://www.instagram.com/tombellcabinetrynashville',
     instagramHandle: '@tombellcabinetrynashville',
