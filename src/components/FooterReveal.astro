@@ -1,0 +1,26 @@
+---
+// Panel pinned behind the page; the footer scrolls up like a curtain to reveal it.
+import { site } from '../site';
+---
+<aside class="reveal light" aria-labelledby="reveal-h">
+  <div class="reveal__bg"><img src="/img/hero-kitchen-sm.webp" alt="" loading="lazy" width="1280" height="853"></div>
+  <div class="reveal__in">
+    <h2 id="reveal-h">Ready when you are</h2>
+    <p>Tell us about the room. We'll measure, draw it and give you a clear price, usually within a week of the first visit.</p>
+    <div class="reveal__actions">
+      <a class="btn btn--solid" href="/contact/">Request a Free Estimate</a>
+      <a class="link-line" href={site.phoneHref}>Call or text {site.phone}</a>
+    </div>
+  </div>
+</aside>
+
+<style>
+.reveal{position:fixed;left:0;right:0;bottom:0;height:var(--reveal-h);z-index:0;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:var(--ivory);color:var(--ink)}
+.reveal__bg{position:absolute;inset:0}
+.reveal__bg img{width:100%;height:100%;object-fit:cover;filter:blur(3px) saturate(.7);transform:scale(1.06)}
+.reveal__bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(242,236,227,.9),rgba(242,236,227,.82) 50%,rgba(242,236,227,.92))}
+.reveal__in{position:relative;padding:0 var(--pad);max-width:900px}
+.reveal h2{font-size:clamp(46px,7vw,110px);line-height:1;margin:0 0 22px}
+.reveal p{color:var(--stone-d);margin:0 auto 34px;max-width:46ch}
+.reveal__actions{display:flex;gap:28px;justify-content:center;align-items:center;flex-wrap:wrap}
+</style>
