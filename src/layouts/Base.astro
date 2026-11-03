@@ -19,7 +19,7 @@ interface Props {
   noindex?: boolean;
   solidHeader?: boolean;
 }
-const { title, description = '', image = '/img/share-card-v3.jpg', type = 'website', schema, noindex = false, solidHeader = false } = Astro.props;
+const { title, description = '', image = '/img/share-card-v4.jpg', type = 'website', schema, noindex = false, solidHeader = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 // Share cards must load from wherever the site is live. Before launch that's the
 // pages.dev preview: set OG_HOST in Cloudflare Pages env vars, then delete it at cutover.
@@ -35,7 +35,7 @@ const business = {
   url: `${site.url}/`,
   telephone: site.phoneE164,
   email: site.email,
-  image: `${site.url}/img/share-card-v3.jpg`,
+  image: `${site.url}/img/share-card-v4.jpg`,
   logo: `${site.url}/img/logo-rev.png`,
   address: { '@type': 'PostalAddress', addressLocality: site.shopCity, addressRegion: site.region, addressCountry: 'US' },
   areaServed: site.areas.map((name) => ({ '@type': 'City', name })),
