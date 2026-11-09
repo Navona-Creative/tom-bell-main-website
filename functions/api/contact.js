@@ -2,7 +2,8 @@
 // 1. Emails each estimate request to Matt through Resend (resend.com, free tier),
 //    sending as website@tombellcabinetry.com with Reply-To set to the visitor.
 // 2. Sends the visitor a branded confirmation (reply-to Matt) once Matt's copy is accepted.
-// Pages > Settings > Variables: RESEND_API_KEY (secret), optional TO_EMAIL / FROM_EMAIL.
+// Pages > Settings > Variables: RESEND_API_KEY + TURNSTILE_SECRET_KEY (secrets), optional TO_EMAIL / FROM_EMAIL.
+// Spam protection: honeypot field + Cloudflare Turnstile (widget "Tom Bell estimate form").
 
 const SITE = 'https://tombellcabinetry.com';
 const PHONE = '(615) 469-2781';
@@ -25,6 +26,29 @@ export async function onRequestPost({ request, env }) {
 
   // Spam: honeypot filled -> act like success, send nothing.
   if (get('website')) return done(true);
+
+  // Spam: Cloudflare Turnstile. No valid token -> reject, send nothing.
+  if (env.TURNSTILE_SECRET_KEY) {
+    const token = get('cf-turnstile-response');
+    if (!token) return wantsJson ? json({ ok: false, error: 'captcha' }, 400) : done(false);
+    try {
+      const body = new FormData();
+      body.append('secret', env.TURNSTILE_SECRET_KEY);
+      body.append('response', token);
+      const ip = request.headers.get('CF-Connecting-IP');
+      if (ip) body.append('remoteip', ip);
+      const v = await (await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body })).json();
+      if (!v.success) {
+        console.warn('contact: turnstile failed', JSON.stringify(v['error-codes'] || []));
+        return wantsJson ? json({ ok: false, error: 'captcha' }, 400) : done(false);
+      }
+    } catch (e) {
+      console.error('contact: turnstile unreachable', e && e.message);
+      return done(false);
+    }
+  } else {
+    console.error('contact: TURNSTILE_SECRET_KEY missing');
+  }
 
   const lead = {
     first_name: get('first_name'),

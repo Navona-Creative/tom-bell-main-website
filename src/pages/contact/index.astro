@@ -50,6 +50,7 @@ const schema = {
           <p class="muted field--full" style="font-size:13px;margin:0">See our <a href="/privacy-policy/" style="text-decoration:underline">Privacy Policy</a> and <a href="/terms/" style="text-decoration:underline">Terms</a>.</p>
           <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
           <input type="hidden" name="page" value="/contact/">
+          <div class="field--full"><div class="cf-turnstile" data-sitekey="0x4AAAAAAF6bxwxkVgXSfrfZ" data-theme="light"></div></div>
           <div class="form__msg" id="formMsg" role="alert"></div>
           <div class="field--full"><button class="btn btn--solid" type="submit">Request My Free Estimate</button></div>
         </form>
@@ -58,6 +59,7 @@ const schema = {
   </section>
 </Base>
 
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
   const form = document.getElementById('estimate') as HTMLFormElement;
   const msg = document.getElementById('formMsg')!;
@@ -73,6 +75,12 @@ const schema = {
       msg.classList.add('is-on');
       return;
     }
+    const token = (form.elements.namedItem('cf-turnstile-response') as HTMLInputElement | null)?.value;
+    if (!token) {
+      msg.textContent = 'Please complete the quick security check above the button.';
+      msg.classList.add('is-on');
+      return;
+    }
     const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
     btn.disabled = true; btn.textContent = 'Sending…';
     try {
@@ -83,6 +91,7 @@ const schema = {
       msg.textContent = 'Something went wrong sending your request. Please call or text (615) 469-2781, or try again.';
       msg.classList.add('is-on');
       btn.disabled = false; btn.textContent = 'Request My Free Estimate';
+      (window as any).turnstile?.reset();
     }
   });
 </script>
