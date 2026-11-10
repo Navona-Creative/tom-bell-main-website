@@ -45,6 +45,7 @@ Email authentication on the domain: SPF `v=spf1 include:_spf.google.com include:
 - `src/data/posts.json`, `src/data/legal.json`: blog posts and Privacy/Terms, exported from WordPress.
 - `public/wp-content/uploads/...`: blog featured images at their original WordPress paths.
 - `public/img/`: site photography (WebP). `hero-kitchen.webp` (homepage hero) is licensed Adobe Stock ID 377231448.
+  - **Hero images must be professional, magazine-quality photography.** NEVER use `vaulted.webp` as a page hero (too low quality/blurry); it is OK only as a small gallery/card image.
 - `public/_redirects`: old Redirection-plugin rules, Yoast sitemaps, feeds, WP system URLs.
 - `functions/api/contact.js`: contact form handler (Cloudflare Pages Function), emails via Resend.
 - `src/scripts/motion.ts`: GSAP ScrollTrigger + Lenis scroll animation. Respects `prefers-reduced-motion`.
