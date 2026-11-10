@@ -1,0 +1,145 @@
+---
+// Designer Partner Program. Linked from outreach emails only: kept out of the nav, but indexed.
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { site } from '../../site';
+
+const url = `${site.url}/designer-partners/`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'The Tom Bell Designer Partner Program',
+  url,
+  about: { '@id': `${site.url}/#business` },
+};
+
+const reasons = [
+  ['White-glove, start to finish', 'We handle everything from the first site measure to the final install.'],
+  ['Client-ready team', "Our people are professional and communicative, and we're comfortable in high-end homes and with high-expectation clients."],
+  ['Truly custom', 'Everything is built to your design intent in our Nashville-area shop.'],
+  ['Your client stays your client', "We never go around you. You're kept in the loop at every step."],
+  ['A rewarding partnership', 'Every project you send our way earns a generous referral fee.'],
+];
+
+const steps = [
+  ['01 Join', 'Fill out the short form below.'],
+  ['02 Connect', "We'll schedule a brief call to learn about your clientele, your process, and whether we're a good fit."],
+  ['03 Refer', 'Introduce us to clients who need cabinetry.'],
+  ['04 Earn', 'Get paid when the project is complete.'],
+];
+---
+<Base
+  title="Designer Partner Program | Tom Bell Cabinetry, Nashville"
+  description="Custom cabinetry for your most discerning clients. Interior designers: join the Tom Bell Designer Partner Program for white-glove service and a generous referral fee."
+  image="/img/vaulted.webp"
+  schema={schema}
+>
+  <PageHero
+    title="The Tom Bell Designer Partner Program"
+    intro="Custom cabinetry for your most discerning clients, from a team you can confidently put in front of them."
+    image="/img/vaulted.webp"
+    imageAlt="Custom cabinetry in a vaulted living space by Tom Bell Cabinetry"
+  >
+    <div data-hero-fade style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+      <a class="btn btn--solid" href="#join">Become a Partner</a>
+    </div>
+  </PageHero>
+
+  <section class="section light">
+    <div class="wrap wrap--narrow" data-fade>
+      <p class="lede">Your clients trust you with their homes. You need a cabinetry partner who protects that trust.</p>
+      <p class="prose" style="margin:0;max-width:62ch">Tom Bell Cabinetry is led by business professionals with backgrounds in sales and client service. We communicate like your firm does, show up polished and prepared, and treat every home like the luxury project it is.</p>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-top:clamp(90px,14vh,170px)">
+    <div class="wrap">
+      <div class="split">
+        <h2 class="h2 sticky-top" data-fade>Why designers partner with us</h2>
+        <div data-fade>
+          <ul class="list-lines">
+            {reasons.map(([t, d]) => <li><strong>{t}</strong><span>{d}</span></li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight light">
+    <div class="wrap">
+      <div class="split">
+        <h2 class="h2 sticky-top" data-fade>How it works</h2>
+        <div data-fade>
+          <ol class="timeline">{steps.map(([when, what]) => <li><b>{when}</b><span>{what}</span></li>)}</ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="split">
+        <h2 class="h2 sticky-top" data-fade>Partner terms</h2>
+        <div data-fade>
+          <ul class="list-lines">
+            <li><strong style="font-size:21px;font-family:var(--sans);font-weight:300">A generous referral fee, tailored to each project's scope</strong></li>
+            <li><strong style="font-size:21px;font-family:var(--sans);font-weight:300">Paid within 30 days of the client's final payment</strong></li>
+            <li><strong style="font-size:21px;font-family:var(--sans);font-weight:300">We'll walk through the details on our intro call</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section light" id="join" style="padding-top:clamp(60px,9vh,100px)">
+    <div class="wrap">
+      <div class="split">
+        <aside data-fade>
+          <h2 class="h2">Become a partner</h2>
+          <p class="muted" style="margin:0 0 30px;max-width:36ch">Share a few details and we'll reach out within one business day to schedule a quick intro call.</p>
+          <h3 class="h3">Prefer to talk now?</h3>
+          <p class="note" style="margin:0"><a href={site.phoneHref}>{site.phone}</a></p>
+        </aside>
+
+        <form class="form" id="partner" method="post" action="/api/designer" novalidate data-fade>
+          <p class="muted field--full" style="margin:0 0 6px;font-size:14px">Fields marked * are required.</p>
+          <div class="field"><label for="p-name">Name *</label><input id="p-name" name="name" autocomplete="name" required></div>
+          <div class="field"><label for="p-company">Company *</label><input id="p-company" name="company" autocomplete="organization" required></div>
+          <div class="field"><label for="p-email">Email *</label><input id="p-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="p-phone">Phone</label><input id="p-phone" name="phone" type="tel" autocomplete="tel"></div>
+          <p class="muted field--full" style="font-size:13px;margin:0">See our <a href="/privacy-policy/" style="text-decoration:underline">Privacy Policy</a> and <a href="/terms/" style="text-decoration:underline">Terms</a>.</p>
+          <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+          <div class="field--full"><div class="cf-turnstile" data-sitekey="0x4AAAAAAF6bxwxkVgXSfrfZ" data-theme="light"></div></div>
+          <div class="form__msg" id="formMsg" role="alert"></div>
+          <div class="field--full"><button class="btn btn--solid" type="submit">Become a Partner</button></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+  const form = document.getElementById('partner') as HTMLFormElement;
+  const msg = document.getElementById('formMsg')!;
+  const val = (n: string) => (form.elements.namedItem(n) as HTMLInputElement).value.trim();
+  const fail = (t: string) => { msg.textContent = t; msg.classList.add('is-on'); };
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.classList.remove('is-on');
+    if (!val('name') || !val('company') || !/^\S+@\S+\.\S+$/.test(val('email'))) return fail('Please add your name, company and email.');
+    const token = (form.elements.namedItem('cf-turnstile-response') as HTMLInputElement | null)?.value;
+    if (!token) return fail('Please complete the quick security check above the button.');
+    const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(String(res.status));
+      location.href = '/designer-partners/thank-you/';
+    } catch {
+      fail('Something went wrong. Please call or text (615) 469-2781, or try again.');
+      btn.disabled = false; btn.textContent = 'Become a Partner';
+      (window as any).turnstile?.reset();
+    }
+  });
+</script>
